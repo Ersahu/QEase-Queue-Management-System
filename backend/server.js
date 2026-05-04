@@ -21,7 +21,10 @@ const app = express();
 
 // 🔥 CORS FIX (IMPORTANT)
 app.use(cors({
-  origin: "*", // allow all (for now)
+  origin: [
+    "http://localhost:5173",
+    "https://q-ease-queue-management-system.vercel.app"
+  ],
   credentials: true,
 }));
 
