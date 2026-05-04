@@ -19,25 +19,8 @@ const cors = require('cors');
 // Initialize Express app
 const app = express();
 
-// Create HTTP server
-const server = http.createServer(app);
-
-// Configure CORS
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'FRONTEND_URL=https://q-ease-queue-management-system.vercel.app'
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS not allowed'));
-    }
-  },
-  credentials: true,
-}));
+// ✅ ADD HERE
+app.use(cors());
 
 // Body parser middleware
 app.use(express.json());
