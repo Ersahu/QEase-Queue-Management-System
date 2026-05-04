@@ -152,10 +152,10 @@ cp .env.example .env
 
 Edit `backend/.env`:
 ```env
-MONGODB_URI=mongodb://localhost:27017/qease
+MONGODB_URI=mongodb+srv://sahuvaibhav064_db_user:Hn7zg17RuCeo7yn6@cluster0.ebx0xun.mongodb.net/?appName=Cluster0
 JWT_SECRET=your-strong-secret-key
 PORT=5000
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=https://qease-queue-management-system-1.onrender.com
 
 # Notification Services (leave as mock for development)
 TWILIO_ACCOUNT_SID=mock_sid
@@ -179,8 +179,8 @@ cp .env.example .env
 
 Edit `frontend/.env`:
 ```env
-VITE_API_URL=http://localhost:5000
-VITE_SOCKET_URL=http://localhost:5000
+VITE_API_URL=https://qease-queue-management-system-1.onrender.com/api
+VITE_SOCKET_URL=https://qease-queue-management-system-1.onrender.com
 ```
 
 ### 4. Seed Demo Data (Optional)
@@ -211,8 +211,8 @@ npm run dev
 
 | Service | URL |
 |---|---|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:5000 |
+| Frontend | https://qease-queue-management-system-1.onrender.com |
+| Backend API | https://qease-queue-management-system-1.onrender.com |
 
 ---
 

@@ -127,7 +127,7 @@ The application is fully functional and ready for:
 3. Start MongoDB (or use Atlas)
 4. Run backend: `npm run dev`
 5. Run frontend: `npm run dev`
-6. Access at http://localhost:5173
+6. Access at https://qease-queue-management-system-1.onrender.com
 
 ### 🔮 Future Enhancements (Phase 2)
 

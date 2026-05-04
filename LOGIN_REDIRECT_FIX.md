@@ -14,7 +14,7 @@
 
 ### Test 1: Admin Login Redirect
 
-1. **Open browser**: http://localhost:5173/login
+1. **Open browser**: https://qease-queue-management-system-1.onrender.com/login
 2. **Enter credentials**:
    - Email: `demo@admin.com`
    - Password: `demo123`
@@ -30,7 +30,7 @@
 ### Test 2: Customer Login Redirect
 
 1. **Open incognito/private window** (or logout first)
-2. **Go to**: http://localhost:5173/login
+2. **Go to**: https://qease-queue-management-system-1.onrender.com/login
 3. **Enter credentials**:
    - Email: `demo@customer.com`
    - Password: `demo123`
@@ -45,7 +45,7 @@
 
 ### Test 3: Admin Registration Redirect
 
-1. **Go to**: http://localhost:5173/register
+1. **Go to**: https://qease-queue-management-system-1.onrender.com/register
 2. **Fill form**:
    - Name: Test Admin
    - Email: test@admin.com
@@ -62,7 +62,7 @@
 
 ### Test 4: Customer Registration Redirect
 
-1. **Go to**: http://localhost:5173/register
+1. **Go to**: https://qease-queue-management-system-1.onrender.com/register
 2. **Fill form**:
    - Name: Test Customer
    - Email: test@customer.com
@@ -95,12 +95,12 @@ After the fix, you should see:
 
 **Admin should see:**
 ```
-http://localhost:5173/admin/dashboard
+https://qease-queue-management-system-1.onrender.com/admin/dashboard
 ```
 
 **Customer should see:**
 ```
-http://localhost:5173/dashboard
+https://qease-queue-management-system-1.onrender.com/dashboard
 ```
 
 ---

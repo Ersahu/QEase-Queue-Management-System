@@ -223,7 +223,7 @@ class SimpleLinearRegression {
 ```javascript
 // Via browser console (after login)
 const token = localStorage.getItem('token');
-fetch('http://localhost:5000/api/ai/recommend-time/QUEUE_ID', {
+fetch('https://qease-queue-management-system-1.onrender.com/api/ai/recommend-time/QUEUE_ID', {
   headers: { 'Authorization': `Bearer ${token}` }
 })
 .then(res => res.json())

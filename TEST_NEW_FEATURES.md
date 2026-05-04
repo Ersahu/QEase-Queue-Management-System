@@ -6,7 +6,7 @@
 
 **Test Admin:**
 ```
-1. Go to http://localhost:5173/login
+1. Go to https://qease-queue-management-system-1.onrender.com/login
 2. Login: demo@admin.com / demo123
 3. ✅ Should go to Admin Dashboard automatically
 ```
@@ -14,7 +14,7 @@
 **Test Customer:**
 ```
 1. Open incognito window
-2. Go to http://localhost:5173/login
+2. Go to https://qease-queue-management-system-1.onrender.com/login
 3. Login: demo@customer.com / demo123
 4. ✅ Should go to User Dashboard (queue list) automatically
 ```

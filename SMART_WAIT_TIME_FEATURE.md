@@ -450,7 +450,7 @@ The system learns and improves automatically:
 Admin can view queue statistics via API:
 
 ```bash
-curl http://localhost:5000/api/queues/QUEUE_ID/stats
+curl https://qease-queue-management-system-1.onrender.com/api/queues/QUEUE_ID/stats
 ```
 
 **Metrics Tracked:**

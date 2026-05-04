@@ -20,15 +20,15 @@ npm install
 ```env
 NODE_ENV=development
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/qease
+MONGODB_URI=mongodb+srv://sahuvaibhav064_db_user:Hn7zg17RuCeo7yn6@cluster0.ebx0xun.mongodb.net/?appName=Cluster0
 JWT_SECRET=qease-secret-key-change-in-production-2024
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=https://qease-queue-management-system-1.onrender.com
 ```
 
 **Frontend (.env):**
 ```env
-VITE_API_URL=http://localhost:5000
-VITE_SOCKET_URL=http://localhost:5000
+VITE_API_URL=https://qease-queue-management-system-1.onrender.com/api
+VITE_SOCKET_URL=https://qease-queue-management-system-1.onrender.com
 ```
 
 ### Step 3: Seed Demo Data (Optional but Recommended!)
@@ -60,7 +60,7 @@ npm run dev
 
 ### Step 5: Access the App
 
-Open http://localhost:5173 in your browser!
+Open https://qease-queue-management-system-1.onrender.com in your browser!
 
 ---
 

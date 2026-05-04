@@ -13,9 +13,9 @@ Create `backend/.env` file:
 ```env
 NODE_ENV=development
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/qease
+MONGODB_URI=mongodb+srv://sahuvaibhav064_db_user:Hn7zg17RuCeo7yn6@cluster0.ebx0xun.mongodb.net/?appName=Cluster0
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=https://qease-queue-management-system-1.onrender.com
 ```
 
 **Note**: If you don't have MongoDB installed locally, use MongoDB Atlas (free):
@@ -33,8 +33,8 @@ npm install
 ### Step 4: Configure Frontend Environment
 Create `frontend/.env` file:
 ```env
-VITE_API_URL=http://localhost:5000
-VITE_SOCKET_URL=http://localhost:5000
+VITE_API_URL=https://qease-queue-management-system-1.onrender.com/api
+VITE_SOCKET_URL=https://qease-queue-management-system-1.onrender.com
 ```
 
 ### Step 5: Start the Application
@@ -65,12 +65,12 @@ You should see:
 ```
 VITE v5.x.x ready in xxx ms
 
-➜  Local:   http://localhost:5173/
+➜  Local:   https://qease-queue-management-system-1.onrender.com/
 ```
 
 ### Step 6: Access the Application
 
-Open your browser and go to: **http://localhost:5173**
+Open your browser and go to: **https://qease-queue-management-system-1.onrender.com**
 
 ## 🧪 Test the Application
 
@@ -103,7 +103,7 @@ Open your browser and go to: **http://localhost:5173**
 
 ### Create a Queue (Admin Only)
 ```bash
-curl -X POST http://localhost:5000/api/admin/queues \
+curl -X POST https://qease-queue-management-system-1.onrender.com/api/admin/queues \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -d '{
@@ -115,7 +115,7 @@ curl -X POST http://localhost:5000/api/admin/queues \
 
 ### Get All Queues
 ```bash
-curl http://localhost:5000/api/queues
+curl https://qease-queue-management-system-1.onrender.com/api/queues
 ```
 
 ## 🔧 Troubleshooting
@@ -130,7 +130,7 @@ curl http://localhost:5000/api/queues
 
 ### CORS Errors
 - Ensure FRONTEND_URL in backend .env matches your frontend URL
-- Default is http://localhost:5173
+- Default is https://qease-queue-management-system-1.onrender.com
 
 ### Socket.io Connection Issues
 - Check that VITE_SOCKET_URL matches your backend URL

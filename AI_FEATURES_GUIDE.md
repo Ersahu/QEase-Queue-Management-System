@@ -184,8 +184,8 @@ npm run dev
 ```
 
 ### 3. Access Application
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:5000
+- Frontend: https://qease-queue-management-system-1.onrender.com
+- Backend API: https://qease-queue-management-system-1.onrender.com
 
 ---
 
@@ -219,7 +219,7 @@ npm run dev
 ### Test Time Recommendations
 ```bash
 # Using API
-curl -X GET http://localhost:5000/api/ai/recommend-time/{queueId} \
+curl -X GET https://qease-queue-management-system-1.onrender.com/api/ai/recommend-time/{queueId} \
   -H "Authorization: Bearer {token}"
 ```
 
@@ -287,7 +287,7 @@ const nodemailer = require('nodemailer');
 
 ### Retrain ML Model
 ```bash
-curl -X POST http://localhost:5000/api/ai/train-model/{queueId} \
+curl -X POST https://qease-queue-management-system-1.onrender.com/api/ai/train-model/{queueId} \
   -H "Authorization: Bearer {admin_token}"
 ```
 

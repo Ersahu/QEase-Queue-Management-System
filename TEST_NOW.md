@@ -36,7 +36,7 @@ npm run dev
 
 ### 4. Open Browser
 
-Go to: **http://localhost:5173**
+Go to: **https://qease-queue-management-system-1.onrender.com**
 
 ---
 

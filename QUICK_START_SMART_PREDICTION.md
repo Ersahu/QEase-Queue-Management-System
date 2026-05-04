@@ -17,7 +17,7 @@ npm run dev
 ## Test in 3 Steps
 
 ### 1. Login as Customer
-- URL: http://localhost:5173/login
+- URL: https://qease-queue-management-system-1.onrender.com/login
 - Email: `demo@customer.com`
 - Password: `demo123`
 

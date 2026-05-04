@@ -5,7 +5,7 @@
 ### For Business Owners (Admin)
 
 #### Step 1: Sign Up as Admin
-1. Go to http://localhost:5173
+1. Go to https://qease-queue-management-system-1.onrender.com
 2. Click "Sign Up"
 3. Fill in your details
 4. **Important**: Select **"Business/Admin"** as Account Type
@@ -43,7 +43,7 @@ Once queues are created:
 ### For Customers (Users)
 
 #### Step 1: Sign Up as Customer
-1. Go to http://localhost:5173
+1. Go to https://qease-queue-management-system-1.onrender.com
 2. Click "Sign Up"
 3. Fill in your details
 4. **Important**: Select **"Customer"** as Account Type
@@ -191,7 +191,7 @@ A: Yes! Click "Leave Queue" if you change your mind.
 
 1. **Backend should be running**: `npm run dev` in backend folder
 2. **Frontend should be running**: `npm run dev` in frontend folder
-3. **Open browser**: http://localhost:5173
+3. **Open browser**: https://qease-queue-management-system-1.onrender.com
 4. **Create admin account**: Sign up with "Business/Admin" role
 5. **Create your first queue**: Use the "Create New Queue" button
 6. **Create customer account**: Sign up with "Customer" role in another browser/incognito
