@@ -79,7 +79,6 @@ export const userAPI = {
   getQueues: () => api.get('/users/queues'),
   getNearbyQueues: (params) => api.get('/users/queues/nearby', { params }),
   joinQueue: (queueId) => api.post(`/users/queues/${queueId}/join`),
-  joinQueueViaQR: (token) => api.post(`/qr/${token}/join`),
   leaveQueue: (queueId) => api.delete(`/users/queues/${queueId}/leave`),
   getMyPosition: () => api.get('/users/my-position'),
   getHistory: () => api.get('/users/history'),
@@ -99,7 +98,6 @@ export const adminAPI = {
     api.delete(`/admin/queues/${queueId}/customers/${entryId}`),
   getQueueCustomers: (queueId) => api.get(`/admin/queues/${queueId}/customers`),
   getAnalytics: (params) => api.get('/admin/analytics', { params }),
-  generateQueueJoinQR: (queueId) => api.post(`/admin/queues/${queueId}/qr`),
 };
 
 // Public queue API calls
@@ -108,17 +106,18 @@ export const queueAPI = {
   getById: (id) => api.get(`/queues/${id}`),
   getWaitTime: (queueId) => api.get(`/queues/${queueId}/wait-time`),
   getStats: (queueId) => api.get(`/queues/${queueId}/stats`),
-  getQRQueueDetails: (token) => api.get(`/qr/${token}/details`),
+};
+
+export const tokenAPI = {
+  create: (data) => api.post('/tokens', data),
+  getStatus: (entryId) => api.get(`/tokens/${entryId}/status`),
+  getQueueStatus: (queueId) => api.get(`/tokens/queues/${queueId}/status`),
 };
 
 // AI API calls
 export const aiAPI = {
   predictWaitTime: (data) => api.post('/ai/predict-wait-time', data),
   notifyUser: (data) => api.post('/ai/notify-user', data),
-  generateQR: (data) => api.post('/ai/generate-qr', data),
-  getMyQR: () => api.get('/ai/my-qr'),
-  scanQR: (data) => api.post('/ai/scan-qr', data),
-  checkinAdminQR: (data) => api.post('/ai/checkin-admin-qr', data),
   chatbot: (data) => api.post('/ai/chatbot', data),
   getChatHistory: () => api.get('/ai/chat-history'),
   recommendTime: (queueId) => api.get(`/ai/recommend-time/${queueId}`),

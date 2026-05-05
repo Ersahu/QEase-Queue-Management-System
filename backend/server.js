@@ -15,7 +15,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const queueRoutes = require('./routes/queueRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
-const qrRoutes = require('./routes/qrRoutes');
+const tokenRoutes = require('./routes/tokenRoutes');
 
 // Initialize app
 const app = express();
@@ -120,7 +120,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/queues', queueRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin/analytics', analyticsRoutes);
-app.use('/api/qr', qrRoutes);
+app.use('/api/tokens', tokenRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

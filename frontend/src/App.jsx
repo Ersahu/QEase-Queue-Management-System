@@ -13,8 +13,8 @@ import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import QueueHistory from './pages/QueueHistory';
-import QRScanner from './pages/QRScanner';
-import QRJoinPage from './pages/QRJoinPage';
+import SelfServiceJoin from './pages/SelfServiceJoin';
+import TokenStatus from './pages/TokenStatus';
 
 // Create custom theme
 const theme = createTheme({
@@ -42,9 +42,10 @@ function App() {
             <ErrorBoundary>
               <Routes>
                 {/* Public Routes */}
+                <Route path="/join" element={<SelfServiceJoin />} />
+                <Route path="/token/:entryId" element={<TokenStatus />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/qr-join/:token" element={<QRJoinPage />} />
 
                 {/* Protected User Routes */}
                 <Route
@@ -63,15 +64,6 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="/qr-scanner"
-                  element={
-                    <ProtectedRoute>
-                      <QRScanner />
-                    </ProtectedRoute>
-                  }
-                />
-
                 {/* Protected Admin Routes */}
                 <Route
                   path="/admin/dashboard"
@@ -85,7 +77,7 @@ function App() {
                 {/* Redirect root to dashboard or login */}
                 <Route
                   path="/"
-                  element={<Navigate to="/dashboard" replace />}
+                  element={<Navigate to="/join" replace />}
                 />
               </Routes>
             </ErrorBoundary>

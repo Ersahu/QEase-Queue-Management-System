@@ -61,6 +61,13 @@ const Navbar = () => {
                 <Button
                   color="inherit"
                   component={RouterLink}
+                  to="/join"
+                >
+                  Join Queue
+                </Button>
+                <Button
+                  color="inherit"
+                  component={RouterLink}
                   to="/login"
                 >
                   Login
@@ -96,9 +103,9 @@ const Navbar = () => {
                     <Button
                       color="inherit"
                       component={RouterLink}
-                      to="/qr-scanner"
+                      to="/join"
                     >
-                      QR Scanner
+                      Join Queue
                     </Button>
                     <Button
                       color="inherit"

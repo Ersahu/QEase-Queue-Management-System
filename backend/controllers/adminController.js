@@ -5,7 +5,13 @@ const {
   recalculateQueuePositionsAndNotify,
   notifyQueuePausedResumed,
 } = require('../services/realtimeQueueService');
-const { buildAdminCheckinData } = require('./qrCheckinController');
+
+const VALID_JOIN_SOURCES = ['app', 'self-service', 'kiosk', 'api'];
+const normalizeJoinSource = (entry) => {
+  if (entry && !VALID_JOIN_SOURCES.includes(entry.joinSource)) {
+    entry.joinSource = 'app';
+  }
+};
 
 /**
  * @desc    Get admin dashboard statistics
@@ -37,7 +43,10 @@ const getDashboard = async (req, res) => {
           },
         });
 
-        const qrCheckin = buildAdminCheckinData(queue);
+        const currentEntry = await QueueEntry.findOne({
+          queue: queue._id,
+          status: 'called',
+        }).sort({ calledAt: -1, position: 1 });
 
         return {
           queueId: queue._id,
@@ -46,10 +55,10 @@ const getDashboard = async (req, res) => {
           calledCount,
           completedToday,
           avgServiceTime: queue.avgServiceTime,
+          currentToken: currentEntry?.tokenNumber || null,
           totalServed: queue.totalServed,
           isPaused: queue.isPaused,
           isActive: queue.isActive,
-          qrCheckinData: qrCheckin.qrData,
         };
       })
     );
@@ -132,6 +141,7 @@ const callNextCustomer = async (req, res) => {
 
     // Update status to called
     nextEntry.status = 'called';
+    normalizeJoinSource(nextEntry);
     await nextEntry.save();
 
     // Recalculate positions for remaining customers and trigger notifications
@@ -144,11 +154,13 @@ const callNextCustomer = async (req, res) => {
     // Emit socket events
     if (req.io) {
       // Notify the called customer
-      req.io.to(`user_${nextEntry.user._id}`).emit('customerCalled', {
-        entryId: nextEntry._id,
-        queueName: queue.name,
-        message: 'You are now being called!',
-      });
+      if (nextEntry.user?._id) {
+        req.io.to(`user_${nextEntry.user._id}`).emit('customerCalled', {
+          entryId: nextEntry._id,
+          queueName: queue.name,
+          message: 'You are now being called!',
+        });
+      }
 
       // Update all users in the queue
       req.io.to(`queue_${queue._id}`).emit('queueUpdated', {
@@ -157,10 +169,17 @@ const callNextCustomer = async (req, res) => {
         calledEntry: nextEntry,
         updatedPositions: waitingEntries.map((e) => ({
           entryId: e._id,
-          userId: e.user._id,
+          userId: e.user?._id,
           position: e.position,
           estimatedWaitTime: e.estimatedWaitTime,
         })),
+      });
+
+      req.io.to(`queue_${queue._id}`).emit('token:updated', {
+        queueId: queue._id,
+        currentToken: nextEntry.tokenNumber,
+        entry: nextEntry,
+        message: `Now serving ${nextEntry.tokenNumber || 'next customer'}`,
       });
     }
 
@@ -207,6 +226,7 @@ const completeCustomer = async (req, res) => {
 
     // Update status to completed
     entry.status = 'completed';
+    normalizeJoinSource(entry);
     await entry.save();
 
     // Calculate and store actual service time (AI enhancement)
@@ -223,6 +243,12 @@ const completeCustomer = async (req, res) => {
         queueId: queue._id,
         action: 'completed',
         entryId: entry._id,
+      });
+
+      req.io.to(`queue_${queue._id}`).emit('token:updated', {
+        queueId: queue._id,
+        completedToken: entry.tokenNumber,
+        message: `${entry.tokenNumber || 'Customer'} completed`,
       });
     }
 
@@ -367,6 +393,7 @@ const removeCustomer = async (req, res) => {
 
     // Update status to cancelled
     entry.status = 'cancelled';
+    normalizeJoinSource(entry);
     await entry.save();
 
     // Recalculate positions and trigger position change notifications

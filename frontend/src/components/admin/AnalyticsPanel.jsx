@@ -28,7 +28,12 @@ const AnalyticsPanel = ({ queues = [] }) => {
   const [days, setDays] = useState(7);
   const [selectedQueueId, setSelectedQueueId] = useState('all');
   const [analytics, setAnalytics] = useState({
-    summary: { totalUsersServed: 0, averageWaitTimeMinutes: 0, activeQueues: 0 },
+    summary: {
+      totalUsersServed: 0,
+      averageWaitTimeMinutes: 0,
+      averageServiceTimeMinutes: 0,
+      activeQueues: 0,
+    },
     peakHours: [],
     queueTrends: [],
     queueBreakdown: [],
@@ -56,25 +61,31 @@ const AnalyticsPanel = ({ queues = [] }) => {
     <Box>
       <Paper sx={{ p: 2, mb: 3 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={2.4}>
             <Typography variant="subtitle2" color="text.secondary">
               Users Served
             </Typography>
             <Typography variant="h4">{analytics.summary.totalUsersServed}</Typography>
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={2.4}>
             <Typography variant="subtitle2" color="text.secondary">
               Avg Wait Time
             </Typography>
             <Typography variant="h4">{analytics.summary.averageWaitTimeMinutes} min</Typography>
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={2.4}>
+            <Typography variant="subtitle2" color="text.secondary">
+              Avg Service Time
+            </Typography>
+            <Typography variant="h4">{analytics.summary.averageServiceTimeMinutes} min</Typography>
+          </Grid>
+          <Grid item xs={12} md={2.4}>
             <Typography variant="subtitle2" color="text.secondary">
               Active Queues
             </Typography>
             <Typography variant="h4">{analytics.summary.activeQueues}</Typography>
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={2.4}>
             <Typography variant="subtitle2" color="text.secondary">
               Peak Hour
             </Typography>
@@ -142,7 +153,7 @@ const AnalyticsPanel = ({ queues = [] }) => {
                 <XAxis dataKey="hour" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="servedCount" fill="#2e7d32" />
+                <Bar dataKey="customerCount" fill="#2e7d32" />
               </BarChart>
             </ResponsiveContainer>
           </Paper>

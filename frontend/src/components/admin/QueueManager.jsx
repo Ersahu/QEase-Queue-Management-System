@@ -10,7 +10,6 @@ import {
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import CallIcon from '@mui/icons-material/Call';
-import AdminQRDisplay from './AdminQRDisplay';
 
 const QueueManager = ({ queue, onCallNext, onPause, onResume, adminId }) => {
   return (
@@ -54,6 +53,15 @@ const QueueManager = ({ queue, onCallNext, onPause, onResume, adminId }) => {
           </Box>
         </Box>
 
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            Current Token
+          </Typography>
+          <Typography variant="h5" fontWeight="bold">
+            {queue.currentToken || 'None'}
+          </Typography>
+        </Box>
+
         <Box sx={{ display: 'flex', gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
           <Button
             variant="contained"
@@ -87,8 +95,6 @@ const QueueManager = ({ queue, onCallNext, onPause, onResume, adminId }) => {
             </Button>
           )}
         </Box>
-
-        <AdminQRDisplay queue={queue} adminId={adminId} />
       </CardContent>
     </Card>
   );

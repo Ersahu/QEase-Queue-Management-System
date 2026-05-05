@@ -2,9 +2,11 @@ const QueueEntry = require('../models/QueueEntry');
 const { predictWaitTime } = require('../utils/waitTimePredictor');
 
 const NEAR_TURN_THRESHOLD = 3;
+const VALID_JOIN_SOURCES = ['app', 'self-service', 'kiosk', 'api'];
 
 const emitPositionChange = (io, entry, queue, reason) => {
   if (!io) return;
+  if (!entry.user?._id) return;
 
   io.to(`user_${entry.user._id}`).emit('queue:position-updated', {
     entryId: entry._id,
@@ -19,6 +21,7 @@ const emitPositionChange = (io, entry, queue, reason) => {
 
 const emitNearTurn = (io, entry, queue) => {
   if (!io) return;
+  if (!entry.user?._id) return;
 
   io.to(`user_${entry.user._id}`).emit('queue:near-turn', {
     entryId: entry._id,
@@ -60,7 +63,12 @@ const recalculateQueuePositionsAndNotify = async (queue, io, reason = 'queue_upd
       entry.notificationSent.lastKnownPosition = nextPosition;
     }
 
-    if (positionChanged || previouslyKnown !== nextPosition) {
+    const normalizedJoinSource = !VALID_JOIN_SOURCES.includes(entry.joinSource);
+    if (normalizedJoinSource) {
+      entry.joinSource = 'app';
+    }
+
+    if (positionChanged || previouslyKnown !== nextPosition || normalizedJoinSource) {
       await entry.save();
     }
   }
@@ -82,6 +90,8 @@ const notifyQueuePausedResumed = async (queue, io, isPaused) => {
     : `${queue.name} has resumed. Please keep an eye on your queue position.`;
 
   waitingEntries.forEach((entry) => {
+    if (!entry.user?._id) return;
+
     io.to(`user_${entry.user._id}`).emit(event, {
       queueId: queue._id,
       queueName: queue.name,

@@ -31,11 +31,11 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
         <TableHead>
           <TableRow>
             <TableCell>Position</TableCell>
+            <TableCell>Token</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Phone</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Arrival</TableCell>
             <TableCell>Wait Time</TableCell>
             <TableCell align="right">Actions</TableCell>
           </TableRow>
@@ -53,27 +53,20 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
                   #{customer.position}
                 </Typography>
               </TableCell>
-              <TableCell>{customer.user?.name || 'N/A'}</TableCell>
-              <TableCell>{customer.user?.email || 'N/A'}</TableCell>
-              <TableCell>{customer.user?.phone || 'N/A'}</TableCell>
+              <TableCell>
+                <Chip label={customer.tokenNumber || '-'} color="secondary" size="small" />
+              </TableCell>
+              <TableCell>{customer.customerName || customer.user?.name || 'N/A'}</TableCell>
+              <TableCell>{customer.user?.email || 'Self-service'}</TableCell>
+              <TableCell>
+                {customer.user?.phone || (customer.customerPhoneLast4 ? `***${customer.customerPhoneLast4}` : 'N/A')}
+              </TableCell>
               <TableCell>
                 <Chip
                   label={customer.status}
                   color={customer.status === 'called' ? 'success' : 'primary'}
                   size="small"
                 />
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label={customer.checkedIn ? 'Checked in' : 'Not arrived'}
-                  color={customer.checkedIn ? 'success' : 'default'}
-                  size="small"
-                />
-                {customer.checkedInAt && (
-                  <Typography variant="caption" display="block" color="text.secondary">
-                    {new Date(customer.checkedInAt).toLocaleString()}
-                  </Typography>
-                )}
               </TableCell>
               <TableCell>
                 {customer.estimatedWaitTime} min

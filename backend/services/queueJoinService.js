@@ -1,85 +1,37 @@
-const Queue = require('../models/Queue');
-const QueueEntry = require('../models/QueueEntry');
-const { predictWaitTime } = require('../utils/waitTimePredictor');
+const User = require('../models/User');
+const { joinQueueWithToken } = require('./tokenService');
 
 const joinQueueForUser = async ({ queueId, userId, io, source = 'app' }) => {
-  const queue = await Queue.findById(queueId);
+  const user = await User.findById(userId);
 
-  if (!queue) {
-    return { success: false, statusCode: 404, message: 'Queue not found' };
+  if (!user) {
+    return { success: false, statusCode: 404, message: 'User not found' };
   }
 
-  if (!queue.isActive) {
-    return { success: false, statusCode: 400, message: 'Queue is not active' };
-  }
-
-  if (queue.isPaused) {
-    return { success: false, statusCode: 400, message: 'Queue is currently paused' };
-  }
-
-  const existingEntry = await QueueEntry.findOne({
-    queue: queue._id,
+  const result = await joinQueueWithToken({
+    queueId,
     user: userId,
-    status: { $in: ['waiting', 'called'] },
+    userId,
+    name: user.name,
+    phone: user.phone || '0000000000',
+    serviceType: 'other',
+    io,
   });
 
-  if (existingEntry) {
-    return {
-      success: false,
-      statusCode: 400,
-      message: 'You are already in this queue',
-      data: { entryId: existingEntry._id, position: existingEntry.position },
-    };
-  }
-
-  const lastEntry = await QueueEntry.findOne({
-    queue: queue._id,
-    status: { $in: ['waiting', 'called'] },
-  }).sort({ position: -1 });
-
-  const newPosition = lastEntry ? lastEntry.position + 1 : 1;
-  const prediction = await predictWaitTime(queue._id, newPosition);
-  const estimatedWaitTime = prediction.success ? prediction.predictedWaitTime : 0;
-
-  const entry = await QueueEntry.create({
-    queue: queue._id,
-    user: userId,
-    position: newPosition,
-    estimatedWaitTime,
-    joinSource: source,
-  });
-
-  const populatedEntry = await QueueEntry.findById(entry._id)
-    .populate('user', 'name email phone')
-    .populate('queue', 'name avgServiceTime');
-
-  if (io) {
-    io.to(`queue_${queue._id}`).emit('queueUpdated', {
-      queueId: queue._id,
-      action: 'joined',
-      entry: populatedEntry,
-      newPosition,
-      source,
-    });
-
-    if (source === 'qr') {
-      io.to(`queue_${queue._id}`).emit('customer:checkin', {
-        queueId: queue._id,
-        message: `${populatedEntry.user.name} checked in via QR`,
-        entry: populatedEntry,
-      });
-    }
+  if (!result.success) {
+    return result;
   }
 
   return {
     success: true,
-    statusCode: 201,
+    statusCode: result.statusCode,
     message: 'Successfully joined the queue',
     data: {
-      entryId: populatedEntry._id,
-      position: newPosition,
-      estimatedWaitTime,
-      queueName: queue.name,
+      entryId: result.data.id,
+      tokenNumber: result.data.tokenNumber,
+      position: result.data.position,
+      estimatedWaitTime: result.data.estimatedWaitTime,
+      queueName: result.data.queueName,
     },
   };
 };

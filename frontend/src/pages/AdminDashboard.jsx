@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Tabs, Tab, Button, IconButton, Paper, Alert, Stack, Chip } from '@mui/material';
+import { Container, Typography, Box, Tabs, Tab, Button, IconButton, Paper, Stack, Chip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { adminAPI } from '../services/api';
-import { joinQueueRoom, onQueueUpdated, onCustomerCheckin } from '../services/socketService';
+import { joinQueueRoom, onQueueUpdated, onTokenUpdated } from '../services/socketService';
 import DashboardStats from '../components/admin/DashboardStats';
 import QueueManager from '../components/admin/QueueManager';
 import CustomerList from '../components/admin/CustomerList';
@@ -23,7 +23,7 @@ const AdminDashboard = () => {
   const [tabValue, setTabValue] = useState(0);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [recentCheckin, setRecentCheckin] = useState(null);
+  const [recentToken, setRecentToken] = useState(null);
 
   useEffect(() => {
     fetchDashboard();
@@ -76,9 +76,8 @@ const AdminDashboard = () => {
       }
     });
 
-    onCustomerCheckin((data) => {
-      // Show notification when customer checks in
-      setRecentCheckin(data.entry);
+    onTokenUpdated((data) => {
+      setRecentToken(data.entry || data);
       toast.success(data.message, {
         duration: 5000,
         icon: <PersonAddIcon />,
@@ -94,7 +93,7 @@ const AdminDashboard = () => {
     try {
       const response = await adminAPI.callNextCustomer(queueId);
       if (response.data.data) {
-        toast.success(`Called: ${response.data.data.user?.name}`);
+        toast.success(`Called: ${response.data.data.tokenNumber || response.data.data.user?.name || response.data.data.customerName}`);
       } else {
         toast.info(response.data.message);
       }
@@ -295,7 +294,7 @@ const AdminDashboard = () => {
           Customers in Queue
         </Typography>
 
-        {recentCheckin && recentCheckin.queueId === selectedQueue && (
+        {recentToken && String(recentToken.queueId) === String(selectedQueue) && (
           <Paper sx={{ p: { xs: 2, sm: 3 }, mb: 2, borderLeft: 4, borderColor: 'success.main' }}>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
@@ -305,21 +304,17 @@ const AdminDashboard = () => {
             >
               <Box>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  {recentCheckin.user?.name} arrived
+                  {recentToken.tokenNumber || recentToken.currentToken} updated
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {recentCheckin.user?.email}
-                  {recentCheckin.user?.phone ? ` - ${recentCheckin.user.phone}` : ''}
+                  {recentToken.customer?.name || recentToken.customerName || 'Customer'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Position #{recentCheckin.position} - Checked in {new Date(recentCheckin.checkedInAt).toLocaleString()}
+                  Position #{recentToken.position || '-'} - Status {recentToken.status || 'updated'}
                 </Typography>
               </Box>
-              <Chip label="Checked in" color="success" />
+              <Chip label={recentToken.tokenNumber || recentToken.currentToken || 'Token'} color="success" />
             </Stack>
-            <Alert severity="success" sx={{ mt: 2 }}>
-              Customer details are now visible in the queue table below.
-            </Alert>
           </Paper>
         )}
 

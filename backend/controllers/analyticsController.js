@@ -29,6 +29,7 @@ const getAdminAnalytics = async (req, res) => {
           summary: {
             totalUsersServed: 0,
             averageWaitTimeMinutes: 0,
+            averageServiceTimeMinutes: 0,
             activeQueues: 0,
           },
           peakHours: [],
@@ -55,7 +56,13 @@ const getAdminAnalytics = async (req, res) => {
         $project: {
           queue: 1,
           waitMinutes: {
-            $divide: [{ $subtract: ['$completedAt', '$joinedAt'] }, 1000 * 60],
+            $divide: [{ $subtract: ['$calledAt', '$joinedAt'] }, 1000 * 60],
+          },
+          serviceMinutes: {
+            $ifNull: [
+              '$actualServiceTime',
+              { $divide: [{ $subtract: ['$completedAt', '$calledAt'] }, 1000 * 60] },
+            ],
           },
         },
       },
@@ -64,19 +71,20 @@ const getAdminAnalytics = async (req, res) => {
           _id: null,
           totalUsersServed: { $sum: 1 },
           averageWaitTimeMinutes: { $avg: '$waitMinutes' },
+          averageServiceTimeMinutes: { $avg: '$serviceMinutes' },
         },
       },
     ];
 
     const peakHoursPipeline = [
-      { $match: completedMatch },
+      { $match: baseMatch },
       {
         $group: {
-          _id: { $hour: '$completedAt' },
-          servedCount: { $sum: 1 },
+          _id: { $hour: '$joinedAt' },
+          customerCount: { $sum: 1 },
         },
       },
-      { $sort: { servedCount: -1 } },
+      { $sort: { customerCount: -1 } },
       { $limit: 5 },
     ];
 
@@ -93,6 +101,7 @@ const getAdminAnalytics = async (req, res) => {
               $divide: [{ $subtract: ['$completedAt', '$joinedAt'] }, 1000 * 60],
             },
           },
+          averageServiceTimeMinutes: { $avg: '$actualServiceTime' },
         },
       },
       { $sort: { '_id.day': 1 } },
@@ -106,9 +115,10 @@ const getAdminAnalytics = async (req, res) => {
           served: { $sum: 1 },
           averageWaitTimeMinutes: {
             $avg: {
-              $divide: [{ $subtract: ['$completedAt', '$joinedAt'] }, 1000 * 60],
+              $divide: [{ $subtract: ['$calledAt', '$joinedAt'] }, 1000 * 60],
             },
           },
+          averageServiceTimeMinutes: { $avg: '$actualServiceTime' },
         },
       },
       { $sort: { served: -1 } },
@@ -130,22 +140,26 @@ const getAdminAnalytics = async (req, res) => {
         summary: {
           totalUsersServed: summary[0]?.totalUsersServed || 0,
           averageWaitTimeMinutes: Number((summary[0]?.averageWaitTimeMinutes || 0).toFixed(1)),
+          averageServiceTimeMinutes: Number((summary[0]?.averageServiceTimeMinutes || 0).toFixed(1)),
           activeQueues,
         },
         peakHours: peakHours.map((hourBucket) => ({
           hour: `${String(hourBucket._id).padStart(2, '0')}:00`,
-          servedCount: hourBucket.servedCount,
+          customerCount: hourBucket.customerCount,
+          servedCount: hourBucket.customerCount,
         })),
         queueTrends: queueTrends.map((trend) => ({
           day: trend._id.day,
           served: trend.served,
           averageWaitTimeMinutes: Number(trend.averageWaitTimeMinutes.toFixed(1)),
+          averageServiceTimeMinutes: Number((trend.averageServiceTimeMinutes || 0).toFixed(1)),
         })),
         queueBreakdown: queueBreakdown.map((item) => ({
           queueId: item._id,
           queueName: queueNameMap.get(item._id.toString()) || 'Unknown Queue',
           served: item.served,
           averageWaitTimeMinutes: Number(item.averageWaitTimeMinutes.toFixed(1)),
+          averageServiceTimeMinutes: Number((item.averageServiceTimeMinutes || 0).toFixed(1)),
         })),
       },
     });

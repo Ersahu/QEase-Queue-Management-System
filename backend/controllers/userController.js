@@ -4,6 +4,8 @@ const { predictWaitTime } = require('../utils/waitTimePredictor');
 const { recalculateQueuePositionsAndNotify } = require('../services/realtimeQueueService');
 const { joinQueueForUser } = require('../services/queueJoinService');
 
+const VALID_JOIN_SOURCES = ['app', 'self-service', 'kiosk', 'api'];
+
 /**
  * @desc    Get all active queues for user
  * @route   GET /api/users/queues
@@ -178,6 +180,9 @@ const leaveQueue = async (req, res) => {
 
     // Update status to cancelled
     entry.status = 'cancelled';
+    if (!VALID_JOIN_SOURCES.includes(entry.joinSource)) {
+      entry.joinSource = 'app';
+    }
     await entry.save();
 
     // Recalculate positions for remaining users

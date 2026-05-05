@@ -133,13 +133,10 @@ export const onQueueResumed = (callback) => {
   return () => sock.off('queueResumed', callback);
 };
 
-/**
- * Listen for customer check-in event (admin QR scan)
- */
-export const onCustomerCheckin = (callback) => {
+export const onTokenUpdated = (callback) => {
   const sock = getSocket();
-  sock.on('customer:checkin', callback);
-  return () => sock.off('customer:checkin', callback);
+  sock.on('token:updated', callback);
+  return () => sock.off('token:updated', callback);
 };
 
 export const onNearTurn = (callback) => {

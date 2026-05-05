@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Grid, Box, Alert, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import QrCodeIcon from '@mui/icons-material/QrCode';
 import { userAPI, aiAPI } from '../services/api';
 import {
   onQueueUpdated,
@@ -17,7 +16,6 @@ import QueuePosition from '../components/user/QueuePosition';
 import JoinQueueForm from '../components/user/JoinQueueForm';
 import NearbyQueues from '../components/user/NearbyQueues';
 import PredictionDisplay from '../components/common/PredictionDisplay';
-import QRCodeDisplay from '../components/common/QRCodeDisplay';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
@@ -28,7 +26,6 @@ const UserDashboard = () => {
   const [joinDialog, setJoinDialog] = useState({ open: false, queueId: null, queueName: '' });
   const [joining, setJoining] = useState(false);
   const [prediction, setPrediction] = useState(null);
-  const [qrDialogOpen, setQrDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -166,14 +163,6 @@ const UserDashboard = () => {
                 }}
               >
                 <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setQrDialogOpen(true)}
-                  startIcon={<QrCodeIcon />}
-                >
-                  Show QR Code
-                </Button>
-                <Button
                   variant="outlined"
                   color="error"
                   onClick={handleLeaveQueue}
@@ -231,15 +220,6 @@ const UserDashboard = () => {
         onCancel={() => setJoinDialog({ open: false, queueId: null, queueName: '' })}
         loading={joining}
       />
-
-      {/* QR Code Dialog */}
-      {myPosition && (
-        <QRCodeDisplay
-          entryId={myPosition._id}
-          open={qrDialogOpen}
-          onClose={() => setQrDialogOpen(false)}
-        />
-      )}
     </Container>
   );
 };

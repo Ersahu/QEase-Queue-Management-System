@@ -14,7 +14,36 @@ const queueEntrySchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'User is required'],
+      default: null,
+    },
+    customerName: {
+      type: String,
+      trim: true,
+    },
+    customerPhoneEncrypted: {
+      type: String,
+      select: false,
+    },
+    customerPhoneLast4: {
+      type: String,
+      trim: true,
+    },
+    serviceType: {
+      type: String,
+      enum: ['clinic', 'salon', 'bank', 'restaurant', 'retail', 'government', 'other'],
+      default: 'other',
+    },
+    tokenNumber: {
+      type: String,
+      trim: true,
+      index: true,
+    },
+    tokenSequence: {
+      type: Number,
+      min: 1,
+    },
+    tokenIssuedAt: {
+      type: Date,
     },
     position: {
       type: Number,
@@ -28,7 +57,7 @@ const queueEntrySchema = new mongoose.Schema(
     },
     joinSource: {
       type: String,
-      enum: ['app', 'qr', 'kiosk', 'api'],
+      enum: ['app', 'self-service', 'kiosk', 'api'],
       default: 'app',
     },
     joinedAt: {
@@ -50,18 +79,6 @@ const queueEntrySchema = new mongoose.Schema(
     },
     actualServiceTime: {
       type: Number, // in minutes (calculated after completion)
-    },
-    qrCode: {
-      type: String,
-      unique: true,
-      sparse: true,
-    },
-    checkedIn: {
-      type: Boolean,
-      default: false,
-    },
-    checkedInAt: {
-      type: Date,
     },
     notificationSent: {
       joinNotification: { type: Boolean, default: false },
@@ -90,6 +107,7 @@ const queueEntrySchema = new mongoose.Schema(
 // Compound index for efficient queue queries
 queueEntrySchema.index({ queue: 1, status: 1, position: 1 });
 queueEntrySchema.index({ user: 1 });
+queueEntrySchema.index({ queue: 1, tokenSequence: 1 }, { unique: true, sparse: true });
 
 /**
  * Update position when status changes

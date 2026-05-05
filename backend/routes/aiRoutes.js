@@ -13,12 +13,6 @@ router.post('/predict-wait-time', aiController.getWaitTimePrediction);
 // Notification endpoints
 router.post('/notify-user', aiController.notifyUser);
 
-// QR Code endpoints
-router.post('/generate-qr', aiController.generateQR);
-router.get('/my-qr', aiController.getMyQR);
-router.post('/scan-qr', aiController.scanQR);
-router.post('/checkin-admin-qr', aiController.checkinAdminQR);
-
 // Chatbot endpoints
 router.post('/chatbot', aiController.chatbotMessage);
 router.get('/chat-history', aiController.getChatHistory);
