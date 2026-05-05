@@ -2,7 +2,30 @@ import axios from 'axios';
 
 const rawBase =
   import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const baseURL = rawBase.replace(/\/+$/, '');
+
+const getBaseURL = () => {
+  const configuredBase = rawBase.replace(/\/+$/, '');
+
+  if (typeof window === 'undefined') {
+    return configuredBase;
+  }
+
+  const isVercelApp =
+    window.location.hostname === 'q-ease-queue-management-system.vercel.app';
+  const isLocalApp =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+
+  // In production and local dev, call the same-origin /api rewrite/proxy. This
+  // avoids browser CORS failures even if the Render service has stale CORS env vars.
+  if (isVercelApp || isLocalApp) {
+    return '/api';
+  }
+
+  return configuredBase;
+};
+
+const baseURL = getBaseURL();
 
 // Create axios instance with default config
 const api = axios.create({

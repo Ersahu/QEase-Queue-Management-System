@@ -1,0 +1,21 @@
+
+> qease-frontend@1.0.0 dev
+> vite --host 127.0.0.1
+
+Port 5173 is in use, trying another one...
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m310[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m5174[22m/[39m
+[2m6:20:55 am[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/context/AuthContext.jsx, /src/pages/QRJoinPage.jsx, /src/pages/UserDashboard.jsx, /src/pages/QueueHistory.jsx, /src/pages/AdminDashboard.jsx, /src/pages/QRScanner.jsx, /src/components/common/ChatBot.jsx, /src/components/user/NearbyQueues.jsx, /src/components/common/QRCodeDisplay.jsx, /src/components/admin/AnalyticsPanel.jsx, /src/components/admin/AdminQRDisplay.jsx[22m
+[2m6:20:55 am[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/context/SocketContext.jsx, /src/pages/UserDashboard.jsx, /src/pages/AdminDashboard.jsx[22m
+[2m6:20:55 am[22m [36m[1m[vite][22m[39m [33mhmr invalidate [39m[2m/src/context/AuthContext.jsx[22m Could not Fast Refresh ("useAuth" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+[2m6:20:55 am[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/components/common/Navbar.jsx, /src/pages/Login.jsx, /src/context/SocketContext.jsx, /src/components/common/ProtectedRoute.jsx, /src/pages/Register.jsx, /src/pages/AdminDashboard.jsx[22m
+[2m6:20:55 am[22m [36m[1m[vite][22m[39m [33mhmr invalidate [39m[2m/src/context/SocketContext.jsx[22m Could not Fast Refresh ("useSocket" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+[2m6:20:55 am[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx[22m
+[2m6:21:10 am[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/context/AuthContext.jsx, /src/pages/QRJoinPage.jsx, /src/pages/UserDashboard.jsx, /src/pages/QueueHistory.jsx, /src/pages/AdminDashboard.jsx, /src/pages/QRScanner.jsx, /src/components/common/ChatBot.jsx, /src/components/user/NearbyQueues.jsx, /src/components/common/QRCodeDisplay.jsx, /src/components/admin/AnalyticsPanel.jsx, /src/components/admin/AdminQRDisplay.jsx[22m
+[2m6:21:10 am[22m [36m[1m[vite][22m[39m [33mhmr invalidate [39m[2m/src/context/AuthContext.jsx[22m Could not Fast Refresh ("useAuth" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+[2m6:21:10 am[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/components/common/Navbar.jsx, /src/pages/Login.jsx, /src/context/SocketContext.jsx, /src/components/common/ProtectedRoute.jsx, /src/pages/Register.jsx, /src/pages/AdminDashboard.jsx[22m
+[2m6:21:10 am[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/context/SocketContext.jsx, /src/pages/UserDashboard.jsx, /src/pages/AdminDashboard.jsx[22m
+[2m6:21:10 am[22m [36m[1m[vite][22m[39m [32mvite.config.js changed, restarting server...[39m
+[2m6:21:10 am[22m [36m[1m[vite][22m[39m server restarted.

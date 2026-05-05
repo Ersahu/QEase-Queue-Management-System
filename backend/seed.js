@@ -1,43 +1,45 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 const Queue = require('./models/Queue');
 const connectDB = require('./config/db');
 
 /**
- * Seed script to create demo data for testing
+ * Seed script to create demo data for testing.
  * Run with: node seed.js
  */
 
+const upsertDemoUser = async ({ name, email, role, phone }) => {
+  let user = await User.findOne({ email }).select('+password');
+
+  if (!user) {
+    user = new User({ email });
+  }
+
+  user.name = name;
+  user.role = role;
+  user.phone = phone;
+  user.password = 'demo123';
+  await user.save();
+
+  return user;
+};
+
 const seedDatabase = async () => {
   try {
-    // Connect to database
     await connectDB();
 
-    console.log('🌱 Starting database seeding...');
+    console.log('Starting database seeding...');
 
-    // Check if demo admin already exists
-    const existingAdmin = await User.findOne({ email: 'demo@admin.com' });
-    if (existingAdmin) {
-      console.log('⚠️  Demo admin already exists. Skipping seed.');
-      process.exit(0);
-    }
-
-    // Create demo admin user
-    const hashedPassword = await bcrypt.hash('demo123', 10);
-    const demoAdmin = await User.create({
+    const demoAdmin = await upsertDemoUser({
       name: 'Demo Admin',
       email: 'demo@admin.com',
-      password: hashedPassword,
       role: 'admin',
       phone: '+1234567890',
     });
 
-    console.log('✅ Demo admin created:', demoAdmin.email);
+    console.log('Demo admin ready:', demoAdmin.email);
 
-    // Create demo queues
     const demoQueues = [
       {
         name: 'General Consultation',
@@ -68,29 +70,34 @@ const seedDatabase = async () => {
       },
     ];
 
-    const createdQueues = await Queue.insertMany(demoQueues);
-    console.log(`✅ Created ${createdQueues.length} demo queues`);
+    const existingQueueCount = await Queue.countDocuments({ admin: demoAdmin._id });
+    if (existingQueueCount === 0) {
+      const createdQueues = await Queue.insertMany(demoQueues);
+      console.log(`Created ${createdQueues.length} demo queues`);
+    } else {
+      console.log(
+        `Demo admin already has ${existingQueueCount} queue(s). Skipping queue creation.`
+      );
+    }
 
-    // Create demo customer user
-    const demoCustomer = await User.create({
+    const demoCustomer = await upsertDemoUser({
       name: 'Demo Customer',
       email: 'demo@customer.com',
-      password: hashedPassword,
       role: 'user',
       phone: '+0987654321',
     });
 
-    console.log('✅ Demo customer created:', demoCustomer.email);
+    console.log('Demo customer ready:', demoCustomer.email);
 
-    console.log('\n🎉 Seeding completed successfully!');
-    console.log('\n📝 Login Credentials:');
+    console.log('\nSeeding completed successfully!');
+    console.log('\nLogin Credentials:');
     console.log('Admin: demo@admin.com / demo123');
     console.log('Customer: demo@customer.com / demo123');
     console.log('\nYou can now login and test the application!');
 
     process.exit(0);
   } catch (error) {
-    console.error('❌ Seeding failed:', error);
+    console.error('Seeding failed:', error);
     process.exit(1);
   }
 };

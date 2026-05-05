@@ -155,7 +155,7 @@ Edit `backend/.env`:
 MONGODB_URI=mongodb+srv://sahuvaibhav064_db_user:Hn7zg17RuCeo7yn6@cluster0.ebx0xun.mongodb.net/?appName=Cluster0
 JWT_SECRET=your-strong-secret-key
 PORT=5000
-FRONTEND_URL=https://qease-queue-management-system-1.onrender.com
+FRONTEND_URL=https://q-ease-queue-management-system.vercel.app
 
 # Notification Services (leave as mock for development)
 TWILIO_ACCOUNT_SID=mock_sid

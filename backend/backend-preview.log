@@ -1,0 +1,11 @@
+CORS allowed origins: [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'https://q-ease-queue-management-system.vercel.app'
+]
+MongoDB Connected: ac-olg2fbb-shard-00-01.ebx0xun.mongodb.net
+=================================
+QEase Server Running
+Port: 5000
+=================================
+MongoDB disconnected

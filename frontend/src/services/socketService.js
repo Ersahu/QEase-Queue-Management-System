@@ -1,6 +1,25 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const getSocketURL = () => {
+  const configuredUrl =
+    import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+
+  if (typeof window !== 'undefined') {
+    const isVercelApp =
+      window.location.hostname === 'q-ease-queue-management-system.vercel.app';
+    const isLocalApp =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+
+    if (isVercelApp || isLocalApp) {
+      return window.location.origin;
+    }
+  }
+
+  return configuredUrl.replace(/\/+$/, '');
+};
+
+const SOCKET_URL = getSocketURL();
 
 let socket = null;
 

@@ -15,7 +15,7 @@ NODE_ENV=development
 PORT=5000
 MONGODB_URI=mongodb+srv://sahuvaibhav064_db_user:Hn7zg17RuCeo7yn6@cluster0.ebx0xun.mongodb.net/?appName=Cluster0
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
-FRONTEND_URL=https://qease-queue-management-system-1.onrender.com
+FRONTEND_URL=https://q-ease-queue-management-system.vercel.app
 ```
 
 **Note**: If you don't have MongoDB installed locally, use MongoDB Atlas (free):

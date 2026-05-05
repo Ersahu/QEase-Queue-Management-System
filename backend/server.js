@@ -20,11 +20,19 @@ const qrRoutes = require('./routes/qrRoutes');
 // Initialize app
 const app = express();
 
-// CORS: Origin header never includes a path; normalize trailing slashes on env URLs.
-const normalizeOriginUrl = (value) =>
-  String(value || '')
-    .trim()
-    .replace(/\/+$/, '');
+// CORS: the browser Origin header contains only scheme + host + optional port.
+// Keep API/backend URLs out of this list; they are request targets, not origins.
+const normalizeOriginUrl = (value) => {
+  const rawValue = String(value || '').trim();
+  if (!rawValue) return '';
+
+  try {
+    const url = new URL(rawValue);
+    return url.origin;
+  } catch {
+    return rawValue.replace(/\/+$/, '');
+  }
+};
 
 const DEFAULT_CORS_ORIGINS = [
   'http://localhost:5173',
@@ -34,18 +42,39 @@ const DEFAULT_CORS_ORIGINS = [
 
 const buildAllowedOrigins = () => {
   const set = new Set(DEFAULT_CORS_ORIGINS.map(normalizeOriginUrl));
+
   if (process.env.ALLOWED_ORIGINS) {
     process.env.ALLOWED_ORIGINS.split(',')
       .map((o) => normalizeOriginUrl(o))
       .filter(Boolean)
       .forEach((o) => set.add(o));
-  } else if (process.env.FRONTEND_URL) {
+  }
+
+  if (process.env.FRONTEND_URL) {
     set.add(normalizeOriginUrl(process.env.FRONTEND_URL));
   }
+
   return Array.from(set);
 };
 
 const allowedOriginsList = buildAllowedOrigins();
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow server-to-server tools, health checks, and same-origin/no-Origin requests.
+    if (!origin) return callback(null, true);
+
+    if (allowedOriginsList.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false,
+  optionsSuccessStatus: 204,
+};
 
 const isOriginAllowed = (origin) => {
   if (!origin) return true;
@@ -54,15 +83,8 @@ const isOriginAllowed = (origin) => {
 
 console.log('CORS allowed origins:', allowedOriginsList);
 
-app.use(
-  cors({
-    origin: (origin, callback) => callback(null, isOriginAllowed(origin)),
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: false,
-    optionsSuccessStatus: 204,
-  })
-);
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Body parser
 app.use(express.json());

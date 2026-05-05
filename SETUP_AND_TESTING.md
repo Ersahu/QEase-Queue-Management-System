@@ -22,7 +22,7 @@ NODE_ENV=development
 PORT=5000
 MONGODB_URI=mongodb+srv://sahuvaibhav064_db_user:Hn7zg17RuCeo7yn6@cluster0.ebx0xun.mongodb.net/?appName=Cluster0
 JWT_SECRET=qease-secret-key-change-in-production-2024
-FRONTEND_URL=https://qease-queue-management-system-1.onrender.com
+FRONTEND_URL=https://q-ease-queue-management-system.vercel.app
 ```
 
 **Frontend (.env):**
