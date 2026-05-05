@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card,
-  CardContent,
   Typography,
   Box,
   Button,
@@ -27,6 +25,8 @@ import { adminAPI } from '../../services/api';
 const AdminQRDisplay = ({ queue, adminId }) => {
   const [open, setOpen] = useState(false);
   const [qrData, setQrData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (open && queue) {
@@ -35,17 +35,33 @@ const AdminQRDisplay = ({ queue, adminId }) => {
   }, [open, queue]);
 
   const generateAdminQR = async () => {
+    const queueId = queue?.queueId || queue?._id;
+
+    if (!queueId) {
+      const message = 'Queue ID is missing. Refresh the dashboard and try again.';
+      setErrorMessage(message);
+      toast.error(message);
+      return;
+    }
+
     try {
+      setLoading(true);
+      setErrorMessage('');
       setQrData(null);
-      const queueId = queue.queueId || queue._id;
       const response = await adminAPI.generateQueueJoinQR(queueId);
       const token = response.data.data.token;
       const joinUrl = `${window.location.origin}/qr-join/${token}`;
       setQrData(joinUrl);
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || 'Failed to generate secure QR link'
-      );
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Failed to generate secure QR link';
+      setErrorMessage(message);
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -149,7 +165,16 @@ const AdminQRDisplay = ({ queue, adminId }) => {
         </DialogTitle>
 
         <DialogContent>
-          {qrData ? (
+          {errorMessage ? (
+            <Box sx={{ py: 3 }}>
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {errorMessage}
+              </Alert>
+              <Button variant="contained" onClick={generateAdminQR} disabled={loading}>
+                Retry QR Generation
+              </Button>
+            </Box>
+          ) : qrData ? (
             <Box sx={{ textAlign: 'center' }}>
               <Alert severity="info" sx={{ mb: 3 }}>
                 Display or print this QR code. Customers can scan it to check-in and notify you of their arrival.
@@ -198,11 +223,11 @@ const AdminQRDisplay = ({ queue, adminId }) => {
                 </Button>
               </Box>
             </Box>
-          ) : (
+          ) : loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress />
             </Box>
-          )}
+          ) : null}
         </DialogContent>
 
         <DialogActions>

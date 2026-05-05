@@ -22,6 +22,12 @@ const verifyQueueJoinToken = (token) => {
 
 const generateQueueJoinQR = async (req, res) => {
   try {
+    console.log('Generate queue join QR request:', {
+      queueId: req.params.id,
+      userId: req.user?._id?.toString(),
+      role: req.user?.role,
+    });
+
     const queue = await Queue.findById(req.params.id);
     if (!queue) {
       return res.status(404).json({ success: false, message: 'Queue not found' });
