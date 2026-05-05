@@ -25,6 +25,26 @@ const buildQueueJoinData = (queue) => {
   };
 };
 
+const encodeQrPayload = (payload) =>
+  Buffer.from(JSON.stringify(payload), 'utf8').toString('base64');
+
+const buildAdminCheckinData = (queue) => {
+  const payload = {
+    type: 'ADMIN_QR',
+    queueId: queue._id.toString(),
+    queueName: queue.name,
+    adminId: queue.admin.toString(),
+    generatedAt: new Date().toISOString(),
+  };
+
+  return {
+    queueId: queue._id,
+    queueName: queue.name,
+    qrData: encodeQrPayload(payload),
+    payload,
+  };
+};
+
 const verifyQueueJoinToken = (token) => {
   try {
     return { valid: true, payload: jwt.verify(token, getQrSecret()) };
@@ -56,6 +76,27 @@ const generateQueueJoinQR = async (req, res) => {
     });
   } catch (error) {
     console.error('Generate queue join QR error:', error);
+    return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+const generateAdminCheckinQR = async (req, res) => {
+  try {
+    const queue = await Queue.findById(req.params.id || req.params.queueId);
+    if (!queue) {
+      return res.status(404).json({ success: false, message: 'Queue not found' });
+    }
+
+    if (queue.admin.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+
+    return res.json({
+      success: true,
+      data: buildAdminCheckinData(queue),
+    });
+  } catch (error) {
+    console.error('Generate admin check-in QR error:', error);
     return res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
@@ -127,7 +168,9 @@ const joinQueueFromQr = async (req, res) => {
 
 module.exports = {
   buildQueueJoinData,
+  buildAdminCheckinData,
   generateQueueJoinQR,
+  generateAdminCheckinQR,
   getQueueDetailsFromToken,
   joinQueueFromQr,
 };

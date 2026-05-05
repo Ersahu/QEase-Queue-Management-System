@@ -27,7 +27,7 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
 
   return (
     <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
-      <Table sx={{ minWidth: 760 }}>
+      <Table sx={{ minWidth: 880 }}>
         <TableHead>
           <TableRow>
             <TableCell>Position</TableCell>
@@ -35,6 +35,7 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
             <TableCell>Email</TableCell>
             <TableCell>Phone</TableCell>
             <TableCell>Status</TableCell>
+            <TableCell>Arrival</TableCell>
             <TableCell>Wait Time</TableCell>
             <TableCell align="right">Actions</TableCell>
           </TableRow>
@@ -61,6 +62,18 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
                   color={customer.status === 'called' ? 'success' : 'primary'}
                   size="small"
                 />
+              </TableCell>
+              <TableCell>
+                <Chip
+                  label={customer.checkedIn ? 'Checked in' : 'Not arrived'}
+                  color={customer.checkedIn ? 'success' : 'default'}
+                  size="small"
+                />
+                {customer.checkedInAt && (
+                  <Typography variant="caption" display="block" color="text.secondary">
+                    {new Date(customer.checkedInAt).toLocaleString()}
+                  </Typography>
+                )}
               </TableCell>
               <TableCell>
                 {customer.estimatedWaitTime} min

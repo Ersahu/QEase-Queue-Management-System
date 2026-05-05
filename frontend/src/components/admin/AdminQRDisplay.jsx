@@ -49,18 +49,13 @@ const AdminQRDisplay = ({ queue, adminId }) => {
       setErrorMessage('');
       setQrData(null);
 
-      if (queue?.qrJoinToken || queue?.qrJoinUrl) {
-        const joinUrl = queue.qrJoinToken
-          ? `${window.location.origin}/qr-join/${queue.qrJoinToken}`
-          : queue.qrJoinUrl;
-        setQrData(joinUrl);
+      if (queue?.qrCheckinData) {
+        setQrData(queue.qrCheckinData);
         return;
       }
 
       const response = await adminAPI.generateQueueJoinQR(queueId);
-      const token = response.data.data.token;
-      const joinUrl = `${window.location.origin}/qr-join/${token}`;
-      setQrData(joinUrl);
+      setQrData(response.data.data.qrData);
     } catch (error) {
       const message =
         error.response?.data?.message ||
@@ -186,7 +181,7 @@ const AdminQRDisplay = ({ queue, adminId }) => {
           ) : qrData ? (
             <Box sx={{ textAlign: 'center' }}>
               <Alert severity="info" sx={{ mb: 3 }}>
-                Display or print this QR code. Customers can scan it to check-in and notify you of their arrival.
+                Display or print this QR code at your building entrance. Customers scan it from their QR Scanner page when they arrive.
               </Alert>
 
               <Paper
@@ -212,7 +207,7 @@ const AdminQRDisplay = ({ queue, adminId }) => {
                   Queue: {queue.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Customers scan this QR to check-in for their appointment
+                  Customers already in this queue scan this QR to mark themselves arrived.
                 </Typography>
               </Box>
 

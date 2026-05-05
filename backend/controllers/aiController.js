@@ -250,7 +250,7 @@ const checkinAdminQR = async (req, res) => {
     // Decode QR data
     let decodedData;
     try {
-      decodedData = JSON.parse(atob(qrData));
+      decodedData = JSON.parse(Buffer.from(qrData, 'base64').toString('utf8'));
     } catch (error) {
       return res.status(400).json({
         success: false,
@@ -267,6 +267,21 @@ const checkinAdminQR = async (req, res) => {
     }
 
     const { queueId, queueName, adminId } = decodedData;
+
+    const queue = await Queue.findById(queueId);
+    if (!queue || !queue.isActive) {
+      return res.status(404).json({
+        success: false,
+        message: 'Queue is not available for check-in',
+      });
+    }
+
+    if (queue.admin.toString() !== adminId) {
+      return res.status(400).json({
+        success: false,
+        message: 'QR code does not match this queue admin',
+      });
+    }
 
     // Find customer's active entry in this queue
     const entry = await QueueEntry.findOne({
@@ -298,18 +313,29 @@ const checkinAdminQR = async (req, res) => {
     entry.checkedInAt = new Date();
     await entry.save();
 
+    const arrivalDetails = {
+      id: entry._id,
+      queueId: entry.queue._id,
+      position: entry.position,
+      status: entry.status,
+      queue: entry.queue.name,
+      joinedAt: entry.joinedAt,
+      checkedInAt: entry.checkedInAt,
+      estimatedWaitTime: entry.estimatedWaitTime,
+      user: {
+        id: entry.user._id,
+        name: entry.user.name,
+        email: entry.user.email,
+        phone: entry.user.phone,
+      },
+    };
+
     // Emit socket event to notify admin
     const io = req.app.get('io');
     if (io) {
       io.to(`queue_${queueId}`).emit('customer:checkin', {
         queueId,
-        entry: {
-          id: entry._id,
-          position: entry.position,
-          user: entry.user,
-          checkedInAt: entry.checkedInAt,
-          queue: entry.queue.name,
-        },
+        entry: arrivalDetails,
         message: `${entry.user.name} has checked in for ${queueName}`,
       });
     }
@@ -318,14 +344,7 @@ const checkinAdminQR = async (req, res) => {
       success: true,
       message: `Successfully checked in to ${queueName}`,
       data: {
-        entry: {
-          id: entry._id,
-          position: entry.position,
-          status: entry.status,
-          queue: entry.queue.name,
-          user: entry.user,
-          checkedInAt: entry.checkedInAt,
-        },
+        entry: arrivalDetails,
         queueInfo: {
           queueId,
           queueName,

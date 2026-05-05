@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Tabs, Tab, Button, IconButton } from '@mui/material';
+import { Container, Typography, Box, Tabs, Tab, Button, IconButton, Paper, Alert, Stack, Chip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const [tabValue, setTabValue] = useState(0);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [recentCheckin, setRecentCheckin] = useState(null);
 
   useEffect(() => {
     fetchDashboard();
@@ -77,6 +78,7 @@ const AdminDashboard = () => {
 
     onCustomerCheckin((data) => {
       // Show notification when customer checks in
+      setRecentCheckin(data.entry);
       toast.success(data.message, {
         duration: 5000,
         icon: <PersonAddIcon />,
@@ -292,6 +294,35 @@ const AdminDashboard = () => {
         <Typography variant="h6" gutterBottom>
           Customers in Queue
         </Typography>
+
+        {recentCheckin && recentCheckin.queueId === selectedQueue && (
+          <Paper sx={{ p: { xs: 2, sm: 3 }, mb: 2, borderLeft: 4, borderColor: 'success.main' }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              justifyContent="space-between"
+              alignItems={{ xs: 'flex-start', sm: 'center' }}
+            >
+              <Box>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {recentCheckin.user?.name} arrived
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {recentCheckin.user?.email}
+                  {recentCheckin.user?.phone ? ` - ${recentCheckin.user.phone}` : ''}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Position #{recentCheckin.position} - Checked in {new Date(recentCheckin.checkedInAt).toLocaleString()}
+                </Typography>
+              </Box>
+              <Chip label="Checked in" color="success" />
+            </Stack>
+            <Alert severity="success" sx={{ mt: 2 }}>
+              Customer details are now visible in the queue table below.
+            </Alert>
+          </Paper>
+        )}
+
         <CustomerList
           customers={customers}
           onComplete={handleComplete}

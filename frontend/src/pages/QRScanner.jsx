@@ -90,17 +90,19 @@ const QRScanner = () => {
 
       // Detect QR type
       let decodedData = null;
+      let detectedType = 'CUSTOMER_QR';
       try {
         decodedData = JSON.parse(atob(trimmedQrData));
-        setQrType(decodedData.type);
+        detectedType = decodedData.type || 'CUSTOMER_QR';
       } catch (e) {
-        setQrType('CUSTOMER_QR');
+        detectedType = 'CUSTOMER_QR';
       }
+      setQrType(detectedType);
 
       let response;
       
       // Handle based on QR type
-      if (qrType === 'ADMIN_QR' || (decodedData && decodedData.type === 'ADMIN_QR')) {
+      if (detectedType === 'ADMIN_QR') {
         // Customer scanning admin's QR to check-in
         response = await aiAPI.checkinAdminQR({ qrData: trimmedQrData });
       } else {
@@ -113,21 +115,22 @@ const QRScanner = () => {
           success: true,
           message: response.data.message,
           data: response.data.data,
-          type: qrType || 'CUSTOMER_QR',
+          type: detectedType,
         });
         toast.success(response.data.message);
       } else {
         setResult({
           success: false,
           message: response.data.message,
-          type: qrType || 'CUSTOMER_QR',
+          type: detectedType,
         });
         toast.error(response.data.message);
       }
     } catch (err) {
       console.error('QR scan error:', err);
-      setError('Failed to process QR code');
-      toast.error('Failed to process QR code');
+      const message = err.response?.data?.message || 'Failed to process QR code';
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
