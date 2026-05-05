@@ -11,6 +11,7 @@ const {
   deleteQueue,
 } = require('../controllers/adminController');
 const { createQueue } = require('../controllers/queueController');
+const { generateQueueJoinQR } = require('../controllers/qrCheckinController');
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
 
@@ -20,6 +21,7 @@ router.use(authorize('admin'));
 
 router.get('/dashboard', getDashboard);
 router.post('/queues', createQueue);
+router.post('/queues/:id/qr', generateQueueJoinQR);
 router.delete('/queues/:id', deleteQueue);
 router.post('/queues/:id/call-next', callNextCustomer);
 router.post('/queues/:id/complete/:entryId', completeCustomer);

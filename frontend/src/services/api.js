@@ -99,7 +99,7 @@ export const adminAPI = {
     api.delete(`/admin/queues/${queueId}/customers/${entryId}`),
   getQueueCustomers: (queueId) => api.get(`/admin/queues/${queueId}/customers`),
   getAnalytics: (params) => api.get('/admin/analytics', { params }),
-  generateQueueJoinQR: (queueId) => api.post(`/qr/queues/${queueId}/generate`),
+  generateQueueJoinQR: (queueId) => api.post(`/admin/queues/${queueId}/qr`),
 };
 
 // Public queue API calls
