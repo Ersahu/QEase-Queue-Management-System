@@ -19,14 +19,49 @@ const qrRoutes = require('./routes/qrRoutes');
 // Initialize app
 const app = express();
 
-// 🔥 CORS FIX (IMPORTANT)
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://q-ease-queue-management-system.vercel.app"
-  ],
-  credentials: true,
-}));
+// CORS: Origin header never includes a path; normalize trailing slashes on env URLs.
+const normalizeOriginUrl = (value) =>
+  String(value || '')
+    .trim()
+    .replace(/\/+$/, '');
+
+const DEFAULT_CORS_ORIGINS = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'https://q-ease-queue-management-system.vercel.app',
+];
+
+const buildAllowedOrigins = () => {
+  const set = new Set(DEFAULT_CORS_ORIGINS.map(normalizeOriginUrl));
+  if (process.env.ALLOWED_ORIGINS) {
+    process.env.ALLOWED_ORIGINS.split(',')
+      .map((o) => normalizeOriginUrl(o))
+      .filter(Boolean)
+      .forEach((o) => set.add(o));
+  } else if (process.env.FRONTEND_URL) {
+    set.add(normalizeOriginUrl(process.env.FRONTEND_URL));
+  }
+  return Array.from(set);
+};
+
+const allowedOriginsList = buildAllowedOrigins();
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+  return allowedOriginsList.includes(origin);
+};
+
+console.log('CORS allowed origins:', allowedOriginsList);
+
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, isOriginAllowed(origin)),
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: false,
+    optionsSuccessStatus: 204,
+  })
+);
 
 // Body parser
 app.use(express.json());
@@ -38,10 +73,12 @@ connectDB();
 // Create server
 const server = http.createServer(app);
 
-// Socket.io setup
+// Socket.io: use the same allowlist as REST (array form is reliable across Socket.IO versions)
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: allowedOriginsList,
+    methods: ['GET', 'POST'],
+    credentials: false,
   },
 });
 
