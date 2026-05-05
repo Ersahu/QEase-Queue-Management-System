@@ -12,6 +12,19 @@ const createQueueJoinToken = (queue) =>
     { expiresIn: getQrExpiry() }
   );
 
+const buildQueueJoinData = (queue) => {
+  const token = createQueueJoinToken(queue);
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  return {
+    queueId: queue._id,
+    queueName: queue.name,
+    token,
+    joinUrl: `${frontendUrl}/qr-join/${token}`,
+    expiresIn: getQrExpiry(),
+  };
+};
+
 const verifyQueueJoinToken = (token) => {
   try {
     return { valid: true, payload: jwt.verify(token, getQrSecret()) };
@@ -37,19 +50,9 @@ const generateQueueJoinQR = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Not authorized' });
     }
 
-    const token = createQueueJoinToken(queue);
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    const joinUrl = `${frontendUrl}/qr-join/${token}`;
-
     return res.json({
       success: true,
-      data: {
-        queueId: queue._id,
-        queueName: queue.name,
-        token,
-        joinUrl,
-        expiresIn: getQrExpiry(),
-      },
+      data: buildQueueJoinData(queue),
     });
   } catch (error) {
     console.error('Generate queue join QR error:', error);
@@ -123,6 +126,7 @@ const joinQueueFromQr = async (req, res) => {
 };
 
 module.exports = {
+  buildQueueJoinData,
   generateQueueJoinQR,
   getQueueDetailsFromToken,
   joinQueueFromQr,

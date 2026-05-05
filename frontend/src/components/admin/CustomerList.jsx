@@ -33,6 +33,7 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
             <TableCell>Position</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Email</TableCell>
+            <TableCell>Phone</TableCell>
             <TableCell>Status</TableCell>
             <TableCell>Wait Time</TableCell>
             <TableCell align="right">Actions</TableCell>
@@ -53,6 +54,7 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
               </TableCell>
               <TableCell>{customer.user?.name || 'N/A'}</TableCell>
               <TableCell>{customer.user?.email || 'N/A'}</TableCell>
+              <TableCell>{customer.user?.phone || 'N/A'}</TableCell>
               <TableCell>
                 <Chip
                   label={customer.status}

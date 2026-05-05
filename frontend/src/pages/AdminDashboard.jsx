@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { adminAPI } from '../services/api';
-import { onQueueUpdated, onCustomerCheckin } from '../services/socketService';
+import { joinQueueRoom, onQueueUpdated, onCustomerCheckin } from '../services/socketService';
 import DashboardStats from '../components/admin/DashboardStats';
 import QueueManager from '../components/admin/QueueManager';
 import CustomerList from '../components/admin/CustomerList';
@@ -35,6 +35,12 @@ const AdminDashboard = () => {
     }
   }, [selectedQueue]);
 
+  useEffect(() => {
+    dashboardData?.queues?.forEach((queue) => {
+      joinQueueRoom(queue.queueId);
+    });
+  }, [dashboardData]);
+
   const fetchDashboard = async () => {
     try {
       const response = await adminAPI.getDashboard();
@@ -64,8 +70,8 @@ const AdminDashboard = () => {
     onQueueUpdated((data) => {
       // Refresh dashboard data on queue updates
       fetchDashboard();
-      if (selectedQueue === data.queueId) {
-        fetchCustomers(selectedQueue);
+      if (data.queueId) {
+        fetchCustomers(data.queueId);
       }
     });
 
@@ -76,8 +82,8 @@ const AdminDashboard = () => {
         icon: <PersonAddIcon />,
       });
       // Refresh customer list
-      if (selectedQueue === data.queueId) {
-        fetchCustomers(selectedQueue);
+      if (data.queueId) {
+        fetchCustomers(data.queueId);
       }
     });
   };

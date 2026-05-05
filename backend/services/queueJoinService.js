@@ -50,7 +50,7 @@ const joinQueueForUser = async ({ queueId, userId, io, source = 'app' }) => {
   });
 
   const populatedEntry = await QueueEntry.findById(entry._id)
-    .populate('user', 'name email')
+    .populate('user', 'name email phone')
     .populate('queue', 'name avgServiceTime');
 
   if (io) {
@@ -61,6 +61,14 @@ const joinQueueForUser = async ({ queueId, userId, io, source = 'app' }) => {
       newPosition,
       source,
     });
+
+    if (source === 'qr') {
+      io.to(`queue_${queue._id}`).emit('customer:checkin', {
+        queueId: queue._id,
+        message: `${populatedEntry.user.name} checked in via QR`,
+        entry: populatedEntry,
+      });
+    }
   }
 
   return {

@@ -48,6 +48,15 @@ const AdminQRDisplay = ({ queue, adminId }) => {
       setLoading(true);
       setErrorMessage('');
       setQrData(null);
+
+      if (queue?.qrJoinToken || queue?.qrJoinUrl) {
+        const joinUrl = queue.qrJoinToken
+          ? `${window.location.origin}/qr-join/${queue.qrJoinToken}`
+          : queue.qrJoinUrl;
+        setQrData(joinUrl);
+        return;
+      }
+
       const response = await adminAPI.generateQueueJoinQR(queueId);
       const token = response.data.data.token;
       const joinUrl = `${window.location.origin}/qr-join/${token}`;

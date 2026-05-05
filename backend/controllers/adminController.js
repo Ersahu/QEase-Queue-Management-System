@@ -5,6 +5,7 @@ const {
   recalculateQueuePositionsAndNotify,
   notifyQueuePausedResumed,
 } = require('../services/realtimeQueueService');
+const { buildQueueJoinData } = require('./qrCheckinController');
 
 /**
  * @desc    Get admin dashboard statistics
@@ -36,6 +37,8 @@ const getDashboard = async (req, res) => {
           },
         });
 
+        const qrJoin = buildQueueJoinData(queue);
+
         return {
           queueId: queue._id,
           name: queue.name,
@@ -46,6 +49,9 @@ const getDashboard = async (req, res) => {
           totalServed: queue.totalServed,
           isPaused: queue.isPaused,
           isActive: queue.isActive,
+          qrJoinToken: qrJoin.token,
+          qrJoinUrl: qrJoin.joinUrl,
+          qrExpiresIn: qrJoin.expiresIn,
         };
       })
     );
