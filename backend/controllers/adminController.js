@@ -384,6 +384,13 @@ const removeCustomer = async (req, res) => {
       });
     }
 
+    if (entry.queue._id.toString() !== req.params.queueId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Customer does not belong to this queue',
+      });
+    }
+
     if (entry.queue.admin.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -411,7 +418,7 @@ const removeCustomer = async (req, res) => {
         entryId: entry._id,
         updatedPositions: waitingEntries.map((e) => ({
           entryId: e._id,
-          userId: e.user._id,
+          userId: e.user?._id || null,
           position: e.position,
           estimatedWaitTime: e.estimatedWaitTime,
         })),

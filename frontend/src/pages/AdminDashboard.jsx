@@ -146,7 +146,7 @@ const AdminDashboard = () => {
       fetchDashboard();
       fetchCustomers(queueId);
     } catch (error) {
-      toast.error('Failed to remove customer');
+      toast.error(error.response?.data?.message || 'Failed to remove customer');
     }
   };
 

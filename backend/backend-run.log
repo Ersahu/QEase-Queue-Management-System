@@ -1,0 +1,21 @@
+
+> qease-backend@1.0.0 dev
+> nodemon server.js
+
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node server.js`[39m
+CORS allowed origins: [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'https://q-ease-queue-management-system.vercel.app'
+]
+MongoDB Connected: ac-olg2fbb-shard-00-00.ebx0xun.mongodb.net
+=================================
+QEase Server Running
+Port: 5000
+=================================
