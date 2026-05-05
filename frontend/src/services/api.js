@@ -26,12 +26,16 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - Handle errors globally
+// Response interceptor — session expiry on protected routes only.
+// Login/register return 401 for bad credentials; must not redirect or clear storage then.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid
+    const reqUrl = String(error.config?.url || '');
+    const isAuthAttempt =
+      reqUrl.includes('/auth/login') || reqUrl.includes('/auth/register');
+
+    if (error.response?.status === 401 && !isAuthAttempt) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';

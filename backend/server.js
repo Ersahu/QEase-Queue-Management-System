@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
@@ -67,9 +68,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect DB
-connectDB();
-
 // Create server
 const server = http.createServer(app);
 
@@ -128,15 +126,23 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// Start server after MongoDB is ready (avoids listen-then-crash; loads .env from this folder)
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
-  console.log("=================================");
-  console.log("QEase Server Running");
-  console.log(`Port: ${PORT}`);
-  console.log("=================================");
-});
+(async function start() {
+  try {
+    await connectDB();
+    server.listen(PORT, () => {
+      console.log("=================================");
+      console.log("QEase Server Running");
+      console.log(`Port: ${PORT}`);
+      console.log("=================================");
+    });
+  } catch (err) {
+    console.error(err.message || err);
+    process.exit(1);
+  }
+})();
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {

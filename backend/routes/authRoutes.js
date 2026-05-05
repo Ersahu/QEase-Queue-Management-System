@@ -11,9 +11,9 @@ const {
   loginValidation,
 } = require('../utils/validators');
 
-// Public routes
-router.post('/register', registerValidation, register);
-router.post('/login', loginValidation, login);
+// Public routes (spread so each validator runs as its own middleware)
+router.post('/register', ...registerValidation, register);
+router.post('/login', ...loginValidation, login);
 
 // Protected route
 router.get('/me', protect, getMe);

@@ -46,8 +46,13 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, data };
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed';
-      return { success: false, error: message };
+      const body = error.response?.data;
+      const msg =
+        body?.message ||
+        body?.errors?.[0]?.msg ||
+        error.message ||
+        'Login failed';
+      return { success: false, error: msg };
     }
   };
 
@@ -65,8 +70,13 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, data };
     } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed';
-      const errors = error.response?.data?.errors;
+      const body = error.response?.data;
+      const message =
+        body?.message ||
+        body?.errors?.[0]?.msg ||
+        error.message ||
+        'Registration failed';
+      const errors = body?.errors;
       return { success: false, error: message, errors };
     }
   };
