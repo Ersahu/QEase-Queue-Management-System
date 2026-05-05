@@ -160,7 +160,7 @@ const CreateQueueForm = ({ open, onCreate, onCancel, loading }) => {
             margin="normal"
           />
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
             <TextField
               fullWidth
               label="Latitude (optional)"

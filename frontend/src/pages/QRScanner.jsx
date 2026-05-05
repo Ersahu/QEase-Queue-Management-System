@@ -150,13 +150,13 @@ const QRScanner = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="md" sx={{ mt: { xs: 3, sm: 4 }, mb: 4, px: { xs: 2, sm: 3 } }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
         <QrCodeScannerIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
         QR Code Check-In
       </Typography>
 
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <Paper sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
           Scan QR Code
         </Typography>
@@ -172,7 +172,7 @@ const QRScanner = () => {
           </Button>
         ) : (
           <Box>
-            <div id="qr-reader" style={{ width: '100%', maxWidth: 500 }} />
+            <div id="qr-reader" style={{ width: '100%', maxWidth: 500, margin: '0 auto' }} />
             <Button
               variant="outlined"
               color="error"
@@ -191,7 +191,7 @@ const QRScanner = () => {
         )}
       </Paper>
 
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <Paper sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
           Or Enter QR Code Manually
         </Typography>

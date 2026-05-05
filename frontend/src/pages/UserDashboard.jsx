@@ -133,7 +133,7 @@ const UserDashboard = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: { xs: 3, sm: 4 }, mb: 4, px: { xs: 2, sm: 3 } }}>
       {/* Current Position Display */}
       {myPosition && (
         <Box sx={{ mb: 4 }}>
@@ -156,7 +156,15 @@ const UserDashboard = () => {
               <Alert severity="info" sx={{ mb: 2 }}>
                 You are currently in queue. You will be notified when it's your turn.
               </Alert>
-              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mb: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 1.5,
+                  justifyContent: 'center',
+                  mb: 2,
+                  flexDirection: { xs: 'column', sm: 'row' },
+                }}
+              >
                 <Button
                   variant="contained"
                   color="primary"
@@ -206,7 +214,7 @@ const UserDashboard = () => {
           </Button>
         </Box>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
           {queues.map((queue) => (
             <Grid item xs={12} sm={6} md={4} key={queue._id}>
               <QueueCard queue={queue} onJoin={() => handleJoinClick(queue._id, queue.name)} />

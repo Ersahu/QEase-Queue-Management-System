@@ -7,6 +7,7 @@ import { SocketProvider } from './context/SocketContext';
 import Navbar from './components/common/Navbar';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import ChatBot from './components/common/ChatBot';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
@@ -38,54 +39,56 @@ function App() {
         <SocketProvider>
           <Router>
             <Navbar />
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/qr-join/:token" element={<QRJoinPage />} />
+            <ErrorBoundary>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/qr-join/:token" element={<QRJoinPage />} />
 
-              {/* Protected User Routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <UserDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/history"
-                element={
-                  <ProtectedRoute>
-                    <QueueHistory />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/qr-scanner"
-                element={
-                  <ProtectedRoute>
-                    <QRScanner />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Protected User Routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <UserDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/history"
+                  element={
+                    <ProtectedRoute>
+                      <QueueHistory />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/qr-scanner"
+                  element={
+                    <ProtectedRoute>
+                      <QRScanner />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Protected Admin Routes */}
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <ProtectedRoute adminOnly>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Protected Admin Routes */}
+                <Route
+                  path="/admin/dashboard"
+                  element={
+                    <ProtectedRoute adminOnly>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Redirect root to dashboard or login */}
-              <Route
-                path="/"
-                element={<Navigate to="/dashboard" replace />}
-              />
-            </Routes>
+                {/* Redirect root to dashboard or login */}
+                <Route
+                  path="/"
+                  element={<Navigate to="/dashboard" replace />}
+                />
+              </Routes>
+            </ErrorBoundary>
             <ChatBot />
             <Toaster
               position="top-right"

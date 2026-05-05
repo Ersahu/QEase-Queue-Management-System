@@ -20,7 +20,9 @@ const QueueManager = ({ queue, onCallNext, onPause, onResume, adminId }) => {
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 1,
             mb: 2,
           }}
         >
@@ -31,33 +33,34 @@ const QueueManager = ({ queue, onCallNext, onPause, onResume, adminId }) => {
           />
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-          <Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(3, max-content)' }, gap: { xs: 1.5, sm: 3 }, mb: 2 }}>
+          <Box sx={{ minWidth: 0 }}>
             <Typography variant="body2" color="text.secondary">
               Waiting
             </Typography>
-            <Typography variant="h4">{queue.waitingCount}</Typography>
+            <Typography variant="h4" sx={{ fontSize: { xs: '1.8rem', sm: '2.125rem' } }}>{queue.waitingCount}</Typography>
           </Box>
-          <Box>
+          <Box sx={{ minWidth: 0 }}>
             <Typography variant="body2" color="text.secondary">
               Called
             </Typography>
-            <Typography variant="h4">{queue.calledCount}</Typography>
+            <Typography variant="h4" sx={{ fontSize: { xs: '1.8rem', sm: '2.125rem' } }}>{queue.calledCount}</Typography>
           </Box>
-          <Box>
+          <Box sx={{ minWidth: 0 }}>
             <Typography variant="body2" color="text.secondary">
               Served Today
             </Typography>
-            <Typography variant="h4">{queue.completedToday}</Typography>
+            <Typography variant="h4" sx={{ fontSize: { xs: '1.8rem', sm: '2.125rem' } }}>{queue.completedToday}</Typography>
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
           <Button
             variant="contained"
             startIcon={<CallIcon />}
             onClick={() => onCallNext(queue.queueId)}
             disabled={queue.isPaused || queue.waitingCount === 0}
+            fullWidth
           >
             Call Next
           </Button>
@@ -68,6 +71,7 @@ const QueueManager = ({ queue, onCallNext, onPause, onResume, adminId }) => {
               startIcon={<PlayArrowIcon />}
               onClick={() => onResume(queue.queueId)}
               color="success"
+              fullWidth
             >
               Resume
             </Button>
@@ -77,6 +81,7 @@ const QueueManager = ({ queue, onCallNext, onPause, onResume, adminId }) => {
               startIcon={<PauseIcon />}
               onClick={() => onPause(queue.queueId)}
               color="warning"
+              fullWidth
             >
               Pause
             </Button>

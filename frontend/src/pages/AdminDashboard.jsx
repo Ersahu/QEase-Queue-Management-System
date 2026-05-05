@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Grid, Tabs, Tab, Button, IconButton } from '@mui/material';
+import { Container, Typography, Box, Tabs, Tab, Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -184,8 +184,8 @@ const AdminDashboard = () => {
 
   if (!dashboardData || dashboardData.queues.length === 0) {
     return (
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Box sx={{ textAlign: 'center', py: 8 }}>
+      <Container maxWidth="lg" sx={{ mt: { xs: 3, sm: 4 }, px: { xs: 2, sm: 3 } }}>
+        <Box sx={{ textAlign: 'center', py: { xs: 5, sm: 8 } }}>
           <Typography variant="h5" gutterBottom>
             No queues found
           </Typography>
@@ -217,7 +217,7 @@ const AdminDashboard = () => {
   );
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: { xs: 3, sm: 4 }, mb: 4, px: { xs: 2, sm: 3 } }}>
       {/* Stats */}
       <Box sx={{ mb: 4 }}>
         <DashboardStats stats={dashboardData.summary} />
@@ -229,11 +229,13 @@ const AdminDashboard = () => {
       </Box>
 
       {/* Create Queue Button */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: { xs: 'stretch', sm: 'flex-end' } }}>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => setCreateDialogOpen(true)}
+          fullWidth={false}
+          sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
           Create New Queue
         </Button>
@@ -286,7 +288,7 @@ const AdminDashboard = () => {
       )}
 
       {/* Customer List */}
-      <Box>
+      <Box sx={{ minWidth: 0 }}>
         <Typography variant="h6" gutterBottom>
           Customers in Queue
         </Typography>

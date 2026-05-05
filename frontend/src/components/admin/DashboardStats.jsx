@@ -39,7 +39,7 @@ const DashboardStats = ({ stats }) => {
         <Grid item xs={12} sm={6} md={3} key={index}>
           <Paper
             sx={{
-              p: 3,
+              p: { xs: 2, sm: 3 },
               display: 'flex',
               alignItems: 'center',
               gap: 2,
@@ -51,7 +51,7 @@ const DashboardStats = ({ stats }) => {
               <Typography variant="body2" color="text.secondary">
                 {stat.title}
               </Typography>
-              <Typography variant="h4" fontWeight="bold">
+              <Typography variant="h4" fontWeight="bold" sx={{ fontSize: { xs: '1.8rem', sm: '2.125rem' } }}>
                 {stat.value}
               </Typography>
             </Box>

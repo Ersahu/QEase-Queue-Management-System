@@ -26,8 +26,8 @@ const CustomerList = ({ customers, onComplete, onRemove }) => {
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
+    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+      <Table sx={{ minWidth: 760 }}>
         <TableHead>
           <TableRow>
             <TableCell>Position</TableCell>

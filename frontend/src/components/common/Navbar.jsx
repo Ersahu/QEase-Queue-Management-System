@@ -24,7 +24,14 @@ const Navbar = () => {
   return (
     <AppBar position="static" color="primary">
       <Container maxWidth="lg">
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Toolbar
+          sx={{
+            justifyContent: 'space-between',
+            gap: 1,
+            flexWrap: 'wrap',
+            py: { xs: 1, sm: 0 },
+          }}
+        >
           {/* Logo */}
           <Typography
             variant="h6"
@@ -40,7 +47,15 @@ const Navbar = () => {
           </Typography>
 
           {/* Navigation Links */}
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: { xs: 0.5, sm: 1.5 },
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-end',
+            }}
+          >
             {!user ? (
               <>
                 <Button
@@ -94,8 +109,17 @@ const Navbar = () => {
                     </Button>
                   </>
                 )}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" sx={{ color: 'white' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'white',
+                      maxWidth: { xs: 110, sm: 180 },
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {user.name}
                   </Typography>
                   <Button color="inherit" onClick={handleLogout}>
