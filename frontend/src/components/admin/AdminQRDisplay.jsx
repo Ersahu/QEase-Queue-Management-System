@@ -36,11 +36,16 @@ const AdminQRDisplay = ({ queue, adminId }) => {
 
   const generateAdminQR = async () => {
     try {
+      setQrData(null);
       const queueId = queue.queueId || queue._id;
       const response = await adminAPI.generateQueueJoinQR(queueId);
-      setQrData(response.data.data.joinUrl);
+      const token = response.data.data.token;
+      const joinUrl = `${window.location.origin}/qr-join/${token}`;
+      setQrData(joinUrl);
     } catch (error) {
-      toast.error('Failed to generate secure QR link');
+      toast.error(
+        error.response?.data?.message || 'Failed to generate secure QR link'
+      );
     }
   };
 

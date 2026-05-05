@@ -105,6 +105,12 @@ const io = new Server(server, {
 app.set('io', io);
 setupSocketIO(io);
 
+// Make Socket.IO available to controllers that need to notify dashboards.
+app.use((req, res, next) => {
+  req.io = req.app.get('io');
+  next();
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

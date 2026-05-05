@@ -16,8 +16,22 @@ import ErrorIcon from '@mui/icons-material/Error';
 import PersonIcon from '@mui/icons-material/Person';
 import QueueIcon from '@mui/icons-material/Queue';
 import { Html5Qrcode } from 'html5-qrcode';
+import { useNavigate } from 'react-router-dom';
 import { aiAPI } from '../services/api';
 import toast from 'react-hot-toast';
+
+const extractJoinPath = (qrData) => {
+  try {
+    const url = new URL(qrData, window.location.origin);
+    if (url.pathname.startsWith('/qr-join/')) {
+      return `${url.pathname}${url.search}${url.hash}`;
+    }
+  } catch (error) {
+    // Not a URL; continue with legacy QR parsing.
+  }
+
+  return qrData.startsWith('/qr-join/') ? qrData : null;
+};
 
 const QRScanner = () => {
   const [scanning, setScanning] = useState(false);
@@ -26,6 +40,7 @@ const QRScanner = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [qrType, setQrType] = useState(null); // 'ADMIN_QR' or 'CUSTOMER_QR'
+  const navigate = useNavigate();
 
   useEffect(() => {
     let scanner = null;
@@ -64,10 +79,19 @@ const QRScanner = () => {
     setError(null);
 
     try {
+      const trimmedQrData = String(qrData || '').trim();
+      const joinPath = extractJoinPath(trimmedQrData);
+
+      if (joinPath) {
+        toast.success('Queue QR detected');
+        navigate(joinPath);
+        return;
+      }
+
       // Detect QR type
       let decodedData = null;
       try {
-        decodedData = JSON.parse(atob(qrData));
+        decodedData = JSON.parse(atob(trimmedQrData));
         setQrType(decodedData.type);
       } catch (e) {
         setQrType('CUSTOMER_QR');
@@ -78,10 +102,10 @@ const QRScanner = () => {
       // Handle based on QR type
       if (qrType === 'ADMIN_QR' || (decodedData && decodedData.type === 'ADMIN_QR')) {
         // Customer scanning admin's QR to check-in
-        response = await aiAPI.checkinAdminQR({ qrData });
+        response = await aiAPI.checkinAdminQR({ qrData: trimmedQrData });
       } else {
         // Admin scanning customer's QR (existing functionality)
-        response = await aiAPI.scanQR({ qrData });
+        response = await aiAPI.scanQR({ qrData: trimmedQrData });
       }
 
       if (response.data.success) {
