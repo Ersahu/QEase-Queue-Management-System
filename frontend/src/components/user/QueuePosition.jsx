@@ -10,7 +10,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PersonIcon from '@mui/icons-material/Person';
 import SmartWaitTimeDisplay from '../common/SmartWaitTimeDisplay';
 
-const QueuePosition = ({ position, estimatedWaitTime, queueName, status }) => {
+const QueuePosition = ({ position, estimatedWaitTime, queueName, status, tokenNumber }) => {
   const getStatusColor = () => {
     switch (status) {
       case 'waiting':
@@ -54,6 +54,17 @@ const QueuePosition = ({ position, estimatedWaitTime, queueName, status }) => {
       <Typography variant="h6" gutterBottom>
         {queueName}
       </Typography>
+
+      {tokenNumber && (
+        <Box sx={{ my: 2 }}>
+          <Typography variant="overline" sx={{ opacity: 0.9 }}>
+            Your Token
+          </Typography>
+          <Typography variant="h3" fontWeight="bold" sx={{ letterSpacing: 0 }}>
+            {tokenNumber}
+          </Typography>
+        </Box>
+      )}
 
       <Box sx={{ my: 3 }}>
         <PersonIcon sx={{ fontSize: 60, mb: 1 }} />

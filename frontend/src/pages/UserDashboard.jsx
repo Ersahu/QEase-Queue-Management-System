@@ -103,7 +103,12 @@ const UserDashboard = () => {
     setJoining(true);
     try {
       const response = await userAPI.joinQueue(joinDialog.queueId);
-      toast.success(response.data.message);
+      const tokenNumber = response.data.data?.tokenNumber;
+      toast.success(
+        tokenNumber
+          ? `${response.data.message}. Token: ${tokenNumber}`
+          : response.data.message
+      );
       setJoinDialog({ open: false, queueId: null, queueName: '' });
       fetchData();
     } catch (error) {
@@ -139,6 +144,7 @@ const UserDashboard = () => {
             estimatedWaitTime={myPosition.estimatedWaitTime}
             queueName={myPosition.queue.name}
             status={myPosition.status}
+            tokenNumber={myPosition.tokenNumber}
           />
           
           {/* AI Prediction */}
